@@ -70,6 +70,9 @@ public class SplitWise {
                 case "ALL":
                     List<User> users = userService.getAllUsers();
                     showAllUsers(users);
+                    break;
+                default:
+                    throw new Exception("Command " + commandType + " not found");
             }
         }
     }
@@ -78,8 +81,9 @@ public class SplitWise {
         if(users == null || users.size() == 0) {
             System.out.println("No Users");
         }
+        assert users != null;
         for(User user: users) {
-            System.out.println(user.getId() + ", " + user.getName());
+            System.out.println(user.getId() + ", " + user.getName() + ", " + user.getEmail() + ", " + user.getPhone());
         }
     }
 
@@ -91,7 +95,7 @@ public class SplitWise {
 
         List<Split> splits = new ArrayList<>();
         switch (expenseType) {
-            case "EQUAL":
+            case "EQUAL" -> {
                 for (int i = 0; i < noOfUsers; i++) {
                     splits.add(new EqualSplit(userService.getUser(commands[4 + i])));
                 }
@@ -102,26 +106,30 @@ public class SplitWise {
                         splits
                 );
                 expenseService.saveExpense(expenseEqual);
-                break;
-            case "EXACT":
+            }
+            case "EXACT" -> {
                 for (int i = 0; i < noOfUsers; i++) {
                     splits.add(new ExactSplit(userService.getUser(commands[4 + i]), Double.parseDouble(commands[5 + noOfUsers + i])));
                 }
                 Expense expenseExact = ExpenseService.createExpense(ExpenseType.EXACT, paidBy, amount, splits);
                 expenseService.saveExpense(expenseExact);
-                break;
-            case "PERCENT":
+            }
+            case "PERCENT" -> {
                 for (int i = 0; i < noOfUsers; i++) {
                     splits.add(new PercentSplit(userService.getUser(commands[4 + i]), Double.parseDouble(commands[5 + noOfUsers + i])));
                 }
                 Expense expensePercent = ExpenseService.createExpense(ExpenseType.PERCENT, paidBy, amount, splits);
                 expenseService.saveExpense(expensePercent);
-                break;
+            }
+            default -> {
+                throw new Exception("Split type is wrong");
+            }
         }
     }
 
     public void startApp() {
         userService.saveUser(UserService.createUser("Abhishek", "abhishek@gmail.com", "1234567890"));
+        userService.saveUser(UserService.createUser("Mohini", "mohini@gmail.com", "1234567890"));
         userService.saveUser(UserService.createUser("Vivek", "vivek@gmail.com", "1234567890"));
         userService.saveUser(UserService.createUser("Nisha", "nisha@gmail.com", "1234567890"));
         listen();
