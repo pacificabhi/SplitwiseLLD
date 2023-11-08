@@ -12,7 +12,7 @@ public class UserRepository {
 
     public User getUser(String userId) throws Exception {
         if(!userMap.containsKey(userId)) {
-            throw new Exception("User Id does not exist");
+            throw new Exception(String.format("User Id '%s' does not exist", userId));
         }
 
         return userMap.get(userId);

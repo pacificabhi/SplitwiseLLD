@@ -21,7 +21,7 @@ public class UserService {
     }
 
     public void saveUser(User user) {
-        userRepository.addUser(user);
+        String userId = userRepository.addUser(user);
     }
 
     public User getUser(String userId) throws Exception {
